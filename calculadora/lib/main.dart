@@ -14,7 +14,8 @@ class Myapp extends StatefulWidget {
 class _MyappState extends State<Myapp> {
   
   String numero = '';
-
+  double firstValue = 0.0;
+  String typeOp = '';
   void calcular(String tecla){
     switch(tecla){
       case '1' : 
@@ -27,19 +28,55 @@ class _MyappState extends State<Myapp> {
       case '8' :
       case '9' :
       case '0' :
+      case '.' :
       setState(() {
         numero += tecla;
+        if( numero.contains('.')) {
+          //double finalNum = double.parse(numero);
+          //numero = finalNum.toString();
+        } else {
+          int finalNum = int.parse(numero);
+          numero = finalNum.toString();
+        }
       });
       break;
 
       case 'AC' : 
-      setState(() {
-        numero = '';
-      });
+        setState(() {
+          numero = '';
+        });
+        break;
+      case '+' :
+        firstValue =  double.parse(numero);
+        numero = '0';
+        typeOp = tecla;
+        break;
+      case '=' :
+        double result = 0.0;
+        dynamic resultformated = 0;
+        
+        if (typeOp == '+') {
+          result = firstValue + double.parse(numero);
+
+          List<String> parsedResult = result.toString().split('.');
+
+          if (int.parse(parsedResult[1]) == 0) {
+            // Sem casas decimais, mostrar como inteiro
+            resultformated = int.parse(parsedResult[0]);
+          } else {
+            // Mostrar com casas decimais
+            resultformated = result;
+          }
+        }
+        
+        setState(() {
+          numero = resultformated.toString();
+        });
+        break;
 
       default:
-      numero += tecla;
-      break;
+        numero += tecla;
+        break;
     }
   }
 
@@ -161,9 +198,24 @@ class _MyappState extends State<Myapp> {
                   },
                   child: Text('0'),
                 ),
-                Text(','),
-                Text('='),
-                Text('+'),
+                GestureDetector(
+                  onTap: () {
+                    calcular('.');
+                  },
+                  child: Text('.'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    calcular('=');
+                  },
+                  child: Text('='),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    calcular('+');
+                  },
+                  child: Text('+'),
+                ),
               ],
             ),
           ],
