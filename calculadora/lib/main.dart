@@ -51,6 +51,24 @@ class _MyappState extends State<Myapp> {
         numero = '0';
         typeOp = tecla;
         break;
+      case 'X' :
+        firstValue =  double.parse(numero);
+        numero = '0';
+        typeOp = tecla;
+        break;
+      case '/' :
+        firstValue =  double.parse(numero);
+        numero = '0';
+        typeOp = tecla;
+        break;
+      case 'DEL':
+        setState(() {
+          if (numero.isNotEmpty){
+              String numStr = numero.toString();
+              String semUltimo = numStr.substring(0, numStr.length - 1);
+              numero = semUltimo;
+          }
+        });
       case '=' :
         double result = 0.0;
         dynamic resultformated = 0;
@@ -68,7 +86,36 @@ class _MyappState extends State<Myapp> {
             resultformated = result;
           }
         }
-        
+        if (typeOp == 'X') {
+          result = firstValue * double.parse(numero);
+
+          List<String> parsedResult = result.toString().split('.');
+
+          if (int.parse(parsedResult[1]) == 0) {
+            // Sem casas decimais, mostrar como inteiro
+            resultformated = int.parse(parsedResult[0]);
+          } else {
+            // Mostrar com casas decimais
+            resultformated = result;
+          }
+        }
+        if (typeOp == '/') {
+          if (double.parse(numero) * 1 == 0){
+            print('nah');
+            return;
+          }
+          result = firstValue / double.parse(numero);
+
+          List<String> parsedResult = result.toString().split('.');
+
+          if (int.parse(parsedResult[1]) == 0) {
+            // Sem casas decimais, mostrar como inteiro
+            resultformated = int.parse(parsedResult[0]);
+          } else {
+            // Mostrar com casas decimais
+            resultformated = result;
+          }
+        }
         setState(() {
           numero = resultformated.toString();
         });
@@ -114,7 +161,12 @@ class _MyappState extends State<Myapp> {
                 ),
                 Text(''),
                 Text(''),
-                Text('DEL'),
+                GestureDetector(
+                  onTap: () {
+                    calcular('DEL');
+                  },
+                  child: Text('DEL'),
+                ),
               ],
             ),
             Row(
@@ -138,7 +190,12 @@ class _MyappState extends State<Myapp> {
                   },
                   child: Text('9'),
                 ),
-                Text('/'),
+                GestureDetector(
+                  onTap: () {
+                    calcular('/');
+                  },
+                  child: Text('/'),
+                ),
               ],
             ),
             Row(
@@ -162,7 +219,12 @@ class _MyappState extends State<Myapp> {
                   },
                   child: Text('6'),
                 ),
-                Text('X'),
+                GestureDetector(
+                  onTap: () {
+                    calcular('X');
+                  },
+                  child: Text('X'),
+                ),
               ],
             ),
             Row(
